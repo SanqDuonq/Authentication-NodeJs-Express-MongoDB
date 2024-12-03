@@ -1,3 +1,7 @@
+import dotenv from 'dotenv'
+dotenv.config();
+
 export default {
-    port: 8888
+    Port: 8888,
+    MongoURI: process.env.MongoURI
 }
