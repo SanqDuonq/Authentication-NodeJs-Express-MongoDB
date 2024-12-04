@@ -1,5 +1,5 @@
 import { Request,Response } from "express";
-import { CreateUserInput } from "../schema/user.schema";
+import { CreateUserInput, VerifyUserInput } from "../schema/user.schema";
 import userServices from '../services/user.service'
 import mail from '../mail/mailer'
 async function createUserHandler(req:Request<{},{},CreateUserInput>,res:Response){
@@ -10,7 +10,7 @@ async function createUserHandler(req:Request<{},{},CreateUserInput>,res:Response
             from: 'namsang0902s@mail.com',
             to: user.email,
             subject: 'Please verify your account',
-            text: `Verification Code ${user.verificationCode}. Id: ${user._id}`
+            text: `Verification Code: ${user.verificationCode}. Id: ${user._id}`
         });
         res.send('User successful created')
     } catch (error:any) {
@@ -21,6 +21,35 @@ async function createUserHandler(req:Request<{},{},CreateUserInput>,res:Response
     }
 }
 
+async function verifyUserHandler(req:Request<VerifyUserInput>,res:Response){
+    const id = req.params.id
+    const verificationCode = req.params.verificationCode
+
+    //* find user by id
+    const user = await userServices.findUserById(id)
+    if (!user) {
+        res.send('Could not verify user')
+    }
+
+    //* check to see if they are already verify
+    if (user?.verified) {
+        res.send('user is already verified')
+    }
+
+    //* check verify code match
+    if (user?.verificationCode === verificationCode) {
+        user.verified = true;
+        await user.save();
+        res.send('User successful verify')
+    }
+    res.send('Could not verify user')
+
+}   
+
+
+
+
 export default {
-    createUserHandler
+    createUserHandler,
+    verifyUserHandler
 }
