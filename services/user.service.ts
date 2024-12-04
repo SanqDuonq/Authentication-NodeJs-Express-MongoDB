@@ -5,6 +5,11 @@ function createUser(input: Partial<IUser>){
     return UserModel.create(input)
 }
 
+function findUserById(id: string){
+    return UserModel.findById(id)
+}
+
 export default {
-    createUser
+    createUser,
+    findUserById
 }
