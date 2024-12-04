@@ -32,6 +32,16 @@ export const verifyUserSchema = object({
     })
 })
 
+export const forgotPasswordSchema = object({
+    body: object({
+        email: string({
+            required_error: 'Email is required'
+        }).email('Not a valid email')
+    })
+})
+
 export type CreateUserInput = z.infer<typeof createUserSchema>['body']
 
 export type VerifyUserInput = z.infer<typeof verifyUserSchema>['params']
+
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>['body']
