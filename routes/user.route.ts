@@ -1,10 +1,10 @@
 import express from 'express'
-
+import validateResource from '../middlewares/validate-resource';
+import { createUserSchema } from '../schema/user.schema';
+import controller from '../controllers/user.controller'
 const router = express.Router();
 
-router.get('/api/user', (req,res) => {
-    res.sendStatus(200)
-})
+router.post('/api/user', validateResource(createUserSchema), controller.createUserHandler)
 
 
 export default router;
