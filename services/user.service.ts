@@ -9,7 +9,12 @@ function findUserById(id: string){
     return UserModel.findById(id)
 }
 
+function findUserByEmail(email:string){
+    return UserModel.findOne({email});
+}
+
 export default {
     createUser,
-    findUserById
+    findUserById,
+    findUserByEmail
 }
