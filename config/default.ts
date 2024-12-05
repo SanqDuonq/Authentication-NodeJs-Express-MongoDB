@@ -4,6 +4,8 @@ dotenv.config();
 export default {
     Port: 8888,
     MongoURI: process.env.MongoURI,
+    accessTokenPrivateKey: '',
+    refreshTokenPrivateKey: '',
     smtp: {
         user: 'anya.wiegand61@ethereal.email',
         pass: 'gm78UNxrUzPMQc5ATy',
