@@ -1,9 +1,10 @@
 import { Request,Response } from "express";
-import { CreateUserInput, ForgotPasswordInput, VerifyUserInput } from "../schema/user.schema";
+import { CreateUserInput, ForgotPasswordInput, ResetPasswordInput, VerifyUserInput } from "../schema/user.schema";
 import userServices from '../services/user.service'
 import mail from '../mail/mailer'
 import log from "../utils/logger";
 import { nanoid } from "nanoid";
+import UserModel from "../models/user.model";
 async function createUserHandler(req:Request<{},{},CreateUserInput>,res:Response){
     const body = req.body;
     try {
@@ -77,11 +78,28 @@ async function forgotPasswordHandler(req:Request<ForgotPasswordInput>,res:Respon
     log.debug(`Password reset email sent to ${email}`)
     res.send(message);
 }
+async function resetPasswordHandler(req:Request<ResetPasswordInput['params'],ResetPasswordInput['body']>,res:Response) {
+    const {id,passwordResetCode} = req.params;
+    const {password} = req.body;
 
+    const user = await userServices.findUserById(id)
 
+    if (!user || !user.passwordResetCode || user.passwordResetCode !== passwordResetCode) {
+        res.status(400).send('Could not reset user password')
+    }
+    user!.passwordResetCode = null;
+
+    user!.password = password;
+
+    await user?.save();
+
+    res.send('Successful update password')
+
+}
 
 export default {
     createUserHandler,
     verifyUserHandler,
-    forgotPasswordHandler
+    forgotPasswordHandler,
+    resetPasswordHandler
 }

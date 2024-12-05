@@ -40,8 +40,29 @@ export const forgotPasswordSchema = object({
     })
 })
 
+export const resetPasswordSchema = object({
+    params: object({
+        id: string(),
+        passwordResetCode: string()
+    }),
+    body: object({
+        password: string({
+            required_error: 'Password is required'
+        })
+        .min(8,{message: 'Password is too short - should be min 8 character(s)'}),
+        confirmPassword: string({
+            required_error: 'ConfirmPassword is required'
+        })
+    }).refine((data) => data.password === data.confirmPassword, {
+        message: 'Password do not match',
+        path: ['confirmPassword']
+    })
+})
+
 export type CreateUserInput = z.infer<typeof createUserSchema>['body']
 
 export type VerifyUserInput = z.infer<typeof verifyUserSchema>['params']
 
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>['body']
+
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
