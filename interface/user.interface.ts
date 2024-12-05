@@ -4,6 +4,6 @@ export interface IUser extends Document{
     lastName: string,
     password: string,
     verificationCode?: string | number,
-    passwordResetCode?: string
+    passwordResetCode?: string | null
     verified?: boolean
 }
